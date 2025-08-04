@@ -24,19 +24,28 @@ class DiceParser {
         if (args.length < 5) {
             throw new Error("At least 3 dice must be provided. Example: node game.js 1,2,3,4,5,6 1,2,3,4,5,6 1,2,3,4,5,6");
         }
+
         const diceList = [];
+        let expectedFaces = -1;
+
         for (let i = 2; i < args.length; i++) {
             const values = args[i].split(',').map(val => {
                 const num = parseInt(val.trim(), 10);
                 if (isNaN(num)) throw new Error(`Invalid dice value: ${val}. All values must be integers.`);
                 return num;
             });
+
+            if (expectedFaces === -1) {
+                expectedFaces = values.length;
+            } else if (values.length !== expectedFaces) {
+                throw new Error(`All dice must have the same number of faces. Expected ${expectedFaces} faces but got ${values.length}.`);
+            }
+
             diceList.push(new Dice(values));
         }
         return diceList;
     }
 }
-
 class ProbabilityCalculator {
     static calculateProbabilities(diceList) {
         const probabilities = [];
