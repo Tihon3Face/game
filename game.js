@@ -41,7 +41,6 @@ class DiceParser {
                 throw new Error(`Dice must have at least one face. Example: 1,2,3,4,5,6`);
             }
 
-            // Check if all dice have the same number of faces
             if (diceList.length > 0 && values.length !== diceList[0].getFaces()) {
                 throw new Error(`All dice must have the same number of faces. Expected ${diceList[0].getFaces()} faces but got ${values.length}.`);
             }
@@ -102,33 +101,26 @@ class ProbabilityTable {
             rows.push(row);
         }
         
-        // Calculate column widths
         const colWidths = rows[0].map((_, i) => 
             Math.max(...rows.map(row => row[i].length))
         );
         
-        // Build the table
         let table = '';
         
-        // Top border
         table += '+' + colWidths.map(w => '-'.repeat(w + 2)).join('+') + '+\n';
         
-        // Header row
         table += '| ' + rows[0].map((cell, i) => 
             cell.padEnd(colWidths[i])
         ).join(' | ') + ' |\n';
         
-        // Separator
         table += '+' + colWidths.map(w => '-'.repeat(w + 2)).join('+') + '+\n';
         
-        // Data rows
         for (let i = 1; i < rows.length; i++) {
             table += '| ' + rows[i].map((cell, j) => 
                 cell.padEnd(colWidths[j])
             ).join(' | ') + ' |\n';
         }
         
-        // Bottom border
         table += '+' + colWidths.map(w => '-'.repeat(w + 2)).join('+') + '+\n';
         
         return table;
@@ -143,7 +135,7 @@ class FairRandomGenerator {
     }
 
     prepareRandomSelection(max) {
-        this.key = crypto.randomBytes(32); // 256 bits
+        this.key = crypto.randomBytes(32);
         this.computerValue = this.generateSecureRandomInt(0, max);
         const hmac = crypto.createHmac('sha3-256', this.key);
         hmac.update(this.computerValue.toString());
@@ -153,7 +145,7 @@ class FairRandomGenerator {
 
     generateSecureRandomInt(min, max) {
         const range = max - min + 1;
-        const maxRange = 0x100000000; // 2^32
+        const maxRange = 0x100000000;
         const maxValid = maxRange - (maxRange % range);
         
         let randomValue;
@@ -181,7 +173,6 @@ class FairRandomGenerator {
         if (this.computerValue === null) {
             throw new Error("Random selection not prepared");
         }
-        // This is a bit of a hack since we don't store max, but it's only used for display
         return this.computerValue > 1 ? 5 : 1;
     }
 
@@ -448,7 +439,6 @@ class Game {
     }
 }
 
-// Main execution
 try {
     const diceList = DiceParser.parse(process.argv);
     const game = new Game(diceList);
