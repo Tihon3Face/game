@@ -5,49 +5,22 @@ class Dice {
     constructor(values) {
         this.values = values;
     }
-
-    getFaces() {
-        return this.values.length;
-    }
-
-    roll(index) {
-        return this.values[index];
-    }
-
-    toString() {
-        return `[${this.values.join(',')}]`;
-    }
 }
 
 class DiceParser {
-    static parse(input) {
-        if (!input || input.length < 3) {
-            throw new Error("At least 3 dice must be provided. Example: 1,2,3,4,5,6 1,2,3,4,5,6 1,2,3,4,5,6");
+    static parse(args) {
+        if (args.length < 5) {
+            throw new Error("At least 3 dice must be provided. Example: node game.js 1,2,3,4,5,6 1,2,3,4,5,6 1,2,3,4,5,6");
         }
-
-        const diceStrings = input.slice(2);
         const diceList = [];
-
-        for (const diceStr of diceStrings) {
-            const values = diceStr.split(',').map(val => {
+        for (let i = 2; i < args.length; i++) {
+            const values = args[i].split(',').map(val => {
                 const num = parseInt(val.trim(), 10);
-                if (isNaN(num)) {
-                    throw new Error(`Invalid dice value: ${val}. All values must be integers.`);
-                }
+                if (isNaN(num)) throw new Error(`Invalid dice value: ${val}. All values must be integers.`);
                 return num;
             });
-
-            if (values.length < 1) {
-                throw new Error(`Dice must have at least one face. Example: 1,2,3,4,5,6`);
-            }
-
-            if (diceList.length > 0 && values.length !== diceList[0].getFaces()) {
-                throw new Error(`All dice must have the same number of faces. Expected ${diceList[0].getFaces()} faces but got ${values.length}.`);
-            }
-
             diceList.push(new Dice(values));
         }
-
         return diceList;
     }
 }
