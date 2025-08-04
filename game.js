@@ -21,7 +21,7 @@ class Dice {
 
 class DiceParser {
     static parse(args) {
-        if (args.length < 5) { // Исправлено! Теперь считает аргументы правильно
+        if (args.length < 5) {
             throw new Error("At least 3 dice must be provided. Example: node game.js 1,2,3,4,5,6 1,2,3,4,5,6 1,2,3,4,5,6");
         }
         const diceList = [];
